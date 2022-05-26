@@ -27,6 +27,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         self.physicsBody = borderBody
         self.physicsWorld.gravity = CGVector(dx: 0, dy: -9.8)
         physicsWorld.contactDelegate = self
+        
+        ball.physicsBody?.categoryBitMask = 1
+        paddle.physicsBody?.categoryBitMask = 2
+        block.physicsBody?.categoryBitMask = 3
+        
+        ball.physicsBody?.contactTestBitMask = 2 | 3
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact)
+    {
+        if contact.bodyA.categoryBitMask == 1 && contact.bodyB.categoryBitMask == 3
+        {
+            
+        }
+        if contact.bodyA.categoryBitMask == 3 && contact.bodyB.categoryBitMask == 1
+        {
+        }
     }
     
     func createBlocks()
