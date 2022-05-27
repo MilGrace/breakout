@@ -39,10 +39,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     {
         if contact.bodyA.categoryBitMask == 1 && contact.bodyB.categoryBitMask == 3
         {
-            
+            print("hit")
+            block.removeFromParent()
         }
         if contact.bodyA.categoryBitMask == 3 && contact.bodyB.categoryBitMask == 1
         {
+            print("hit")
+            block.removeFromParent()
         }
     }
     
@@ -70,6 +73,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
             addChild(block)
             block.physicsBody = SKPhysicsBody(rectangleOf: block.frame.size)
             block.physicsBody?.isDynamic = false
+            block.physicsBody?.categoryBitMask = 3
         }
         
     }
