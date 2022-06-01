@@ -40,14 +40,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         if contact.bodyA.categoryBitMask == 1 && contact.bodyB.categoryBitMask == 3
         {
             print("hit")
-            block.removeFromParent()
+            
+            contact.bodyB.node!.removeFromParent()
         }
         if contact.bodyA.categoryBitMask == 3 && contact.bodyB.categoryBitMask == 1
         {
             print("hit")
-            block.removeFromParent()
+           
+            contact.bodyA.node!.removeFromParent()
         }
     }
+    
+    
     
     func createBlocks()
     {
