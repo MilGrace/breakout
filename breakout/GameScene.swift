@@ -66,12 +66,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate
             print("hit")
             
             contact.bodyB.node!.removeFromParent()
+            
+            checkIfWon()
         }
         if contact.bodyA.categoryBitMask == 3 && contact.bodyB.categoryBitMask == 1
         {
             print("hit")
            
-            contact.bodyA.node!.removeFromParent()
+            checkIfWon()
         }
         if contact.bodyA.categoryBitMask == 1 && contact.bodyB.categoryBitMask == 4
         {
@@ -117,6 +119,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         
     }
     
+    func checkIfWon()
+    {
+         if children.contains(where: { $0.name?.contains("block") ?? false })
+         {
+            gameWon()
+         }
+    }
+    
+    func gameWon()
+    {
+        self.removeAllChildren()
+        addChild(youWon)
+        addChild(replay)
+        addChild(replayButton)
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
     {
