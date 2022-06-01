@@ -14,12 +14,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     var ball = SKSpriteNode()
     var paddle = SKSpriteNode()
     var bottom = SKSpriteNode()
+    let gameOver = SKLabelNode()
+    let replay = SKLabelNode()
+    let texture1 = SKTexture(imageNamed: "replayButton")
+    let replayButton = SKSpriteNode()
+    let youWon = SKLabelNode()
+    
     
     override func didMove(to view: SKView)
     {
+        gameOver.text = "Game Over"
+        gameOver.fontSize = 65
+        gameOver.fontColor = SKColor.red
+        gameOver.position = CGPoint(x: frame.midX, y: frame.midY+70)
+        replay.text = "Play Again?"
+        replay.fontSize = 65
+        replay.fontColor = SKColor.green
+        replay.position = CGPoint(x: frame.midX, y: frame.midY)
+        replayButton.size = CGSize(width: 150, height: 150)
+        replayButton.texture = texture1
+        replayButton.position = CGPoint(x: frame.midX, y: frame.midY-110)
+        youWon.text = "You Won!"
+        youWon.fontSize = 65
+        youWon.fontColor = SKColor.green
+        youWon.position = CGPoint(x: frame.midX, y: frame.midY+70)
+        
         createBlocks()
         ball = childNode(withName: "ball") as! SKSpriteNode
         paddle = childNode(withName: "paddle") as! SKSpriteNode
+        bottom = childNode(withName: "bottom") as! SKSpriteNode
         
         let borderBody = SKPhysicsBody(edgeLoopFrom:self.frame)
         borderBody.friction = 0
@@ -31,8 +54,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         ball.physicsBody?.categoryBitMask = 1
         paddle.physicsBody?.categoryBitMask = 2
         block.physicsBody?.categoryBitMask = 3
+        bottom.physicsBody?.categoryBitMask = 4
         
-        ball.physicsBody?.contactTestBitMask = 2 | 3
+        ball.physicsBody?.contactTestBitMask = 2 | 3 | 4
     }
     
     func didBegin(_ contact: SKPhysicsContact)
@@ -48,6 +72,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate
             print("hit")
            
             contact.bodyA.node!.removeFromParent()
+        }
+        if contact.bodyA.categoryBitMask == 1 && contact.bodyB.categoryBitMask == 4
+        {
+            self.removeAllChildren()
+        }
+        if contact.bodyA.categoryBitMask == 4 && contact.bodyB.categoryBitMask == 1
+        {
+            self.removeAllChildren()
+            addChild(gameOver)
+            addChild(replay)
+            addChild(replayButton)
         }
     }
     
@@ -85,9 +120,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
     {
+        let touch = touches.first!
         let location = touches.first!.location(in: self)
-        
         paddle.position = CGPoint(x: location.x, y: paddle.position.y)
+        
+        if replayButton.contains(touch.location(in: self))
+        {
+            createBlocks()
+            ball.position = CGPoint(x: 390.58, y: 610.334)
+            addChild(ball)
+            addChild(bottom)
+            addChild(paddle)
+            
+            gameOver.removeFromParent()
+            replay.removeFromParent()
+            replayButton.removeFromParent()
+            
+        }
+        
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
