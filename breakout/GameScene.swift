@@ -17,8 +17,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     let gameOver = SKLabelNode()
     let replay = SKLabelNode()
     let texture1 = SKTexture(imageNamed: "replayButton")
+    let texture2 = SKTexture(imageNamed: "refresh")
     let replayButton = SKSpriteNode()
     let youWon = SKLabelNode()
+    var refresh = SKSpriteNode()
     
     
     override func didMove(to view: SKView)
@@ -38,6 +40,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         youWon.fontSize = 65
         youWon.fontColor = SKColor.green
         youWon.position = CGPoint(x: frame.midX, y: frame.midY+70)
+        refresh.size = CGSize(width: 84.31, height: 84.31)
+        refresh.texture = texture2
+        refresh.position = CGPoint(x: 66.756, y: 639.022)
+        addChild(refresh)
         
         createBlocks()
         ball = childNode(withName: "ball") as! SKSpriteNode
@@ -73,11 +79,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         {
             print("hit")
            
+            contact.bodyA.node!.removeFromParent()
+            
             checkIfWon()
         }
         if contact.bodyA.categoryBitMask == 1 && contact.bodyB.categoryBitMask == 4
         {
             self.removeAllChildren()
+            addChild(gameOver)
+            addChild(replay)
+            addChild(replayButton)
+ 
         }
         if contact.bodyA.categoryBitMask == 4 && contact.bodyB.categoryBitMask == 1
         {
@@ -111,6 +123,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
             }
             blockCount += 1
             block.position = CGPoint(x: xPos, y: yPos)
+            block.name = "block"
             addChild(block)
             block.physicsBody = SKPhysicsBody(rectangleOf: block.frame.size)
             block.physicsBody?.isDynamic = false
@@ -119,9 +132,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         
     }
     
+    func refreshBall()
+    {
+        if ball.position.y > 285
+        {
+            ball.position = CGPoint(x: 390.58, y: 610.334)
+        }
+    }
+    
     func checkIfWon()
     {
-         if children.contains(where: { $0.name?.contains("block") ?? false })
+         if !(children.contains(where: { $0.name?.contains("block") ?? false }))
          {
             gameWon()
          }
@@ -152,8 +173,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate
             gameOver.removeFromParent()
             replay.removeFromParent()
             replayButton.removeFromParent()
+            youWon.removeFromParent()
             
         }
+        if refresh.contains(touch.location(in: self))
+        {
+            refreshBall()
+        }
+            
         
     }
     
